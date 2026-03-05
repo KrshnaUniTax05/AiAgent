@@ -29,10 +29,6 @@
     vertical-align: middle;
 }
 
-strong{
-    font-weight: 600;
-    /* color: #; */
-}
 
 @keyframes dot-pulse {
     0% {
@@ -1158,7 +1154,7 @@ function formatAIText(text) {
     return formatted;
 }
 
-clearChat()
+// clearChat()
 
 
 
@@ -1225,8 +1221,12 @@ function stripNiharikaTags(text) {
  */
 
 
-
+let queryCount = 0
 async function askNiharika(userInput, isAuto = false, retryCount = 0, nodeRef = null) {
+    queryCount++;
+    if (queryCount > 3) {
+        clearChat();
+    }
     setLogoState('thinking');
     const MAX_RETRIES = 3;
     const viewport = document.getElementById('chat-viewport');
