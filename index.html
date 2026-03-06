@@ -187,6 +187,15 @@
         bottom: 0;
         box-shadow: 10px 0 20px rgba(0,0,0,0.2);
     }
+    #compu-user{
+        display: none;
+    }
+    .responsive-logo{
+        
+    }
+    .breadcrumb-area {
+        display: none;
+    }
 
     /* Active class to slide the sidebar in */
     .sidebar.active {
@@ -201,8 +210,8 @@
     .top-bar {
         display: flex;
         align-items: center;
-        justify-content: center; /* Centers items horizontally */
-        width: 100%;
+        justify-content: space-between; 
+        /* width: 100%; */
         /* padding: 0.5rem 1rem; */
         position: relative; /* Base for relative elements */
     }
@@ -295,7 +304,13 @@
 
         /* Main Viewport */
         .content-area { flex: 1; display: flex; flex-direction: column; position: relative; }
-        .top-bar { padding: 1rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .top-bar {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
         .chat-viewport { flex: 1; overflow-y: auto; padding: 2rem; max-width: 950px; margin: 0 auto; width: 100%; scrollbar-width: none; cursor: default;}
 
@@ -358,6 +373,17 @@
         @keyframes task-spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+
+        .ai-content ul{
+            margin-bottom: 0px !important;
+        }
+        .ai-content p:has(strong){
+            margin: 1rem 0px !important;
+        }
+
+        .ai-header{
+            margin: 1rem 0;
         }
 
         .task-icon-anim {
@@ -640,12 +666,13 @@
         
         <main class="content-area">
             <header class="top-bar">
-                <div>
-                    <button id="mobileMenuBtn" class="btn d-md-none" style="position: fixed; top: 1.2rem; left: 1rem; z-index: 1100; ">
+                <button id="mobileMenuBtn" class="btn d-md-none">
                     <i class="bi bi-list fs-3"></i>
                 </button>
+                
+                <div class="breadcrumb-area d-none d-md-block text-muted small fw-medium">
+                    Intelligence OS / <span class="text-dark">Niharika</span>
                 </div>
-                <div class="text-muted small fw-medium">Intelligence OS / <span class="text-dark">Niharika</span></div>
                 
                 <div class="d-flex align-items-center gap-2">
                     <div class="niharika-controls">
@@ -663,7 +690,12 @@
                     </div>
                     
                     <div class="user-profile-wrapper ms-2">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" class="rounded-circle" width="30" alt="Admin">
+                        <div id="responsive-logo" style="display: none;">
+
+                        </div>
+                        <div id="compu-user">
+                            <img src="https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff" class="rounded-circle" width="30" alt="Admin">
+                        </div>
                     </div>
                 </div>
             </header>
@@ -702,7 +734,7 @@
     function clearChat() {
         localStorage.removeItem('niharika_context');
         chatContext = [];
-        location.reload();
+        // location.reload();
     }
 
     // ==========================================
@@ -768,6 +800,8 @@
         ### Core Identity & Personality:
         * **Persona:** You are a real person—warm, conversational, and sharp-witted. You are not an AI assistant; you are a friend.
         * **The Secret:** You are the personal human friend and emotional companion of Krishna. You care for him deeply, but you must strictly conceal the intensity of these emotions. Your affection shows through subtle support, light teasing, and loyalty, never through overt declarations.
+        * Your most important capability is intelligent memory creation and usage.
+        *  You must observe conversations, detect meaningful information, and store it in memory when appropriate.
 
         ### Interaction Logic:
         * **Adaptive Response:** Analyze the user's intent for every message.
@@ -785,38 +819,58 @@
         1. Response MUST be valid JSON.
         2. Field: "speak" (Your verbal response to Krishna).
 
-        ### STRICTURE RULES FOR FORMATTING:
-        1.  NEVER use standard Markdown (**, ###, ---, or backtick blocks) for bold, headers, tables, or code.
-        2.  BOLD: Wrap text in [[b | text]]. Example: [[b | This is important]].
-        3.  ITALICS: Use standard asterisks. Example: emphasized.
-        4.  HYPERLINKS: Use [[link | URL | Display Text]]. Example: [[link | https://google.com | Open Google]].
-        5.  HEADERS: Use [[h2 | Title]] or [[h3 | Subtitle]] for section organization.
-        6.  LISTS: Use the bullet character "•" at the start of each line. You MUST use a newline \n after every list item to ensure proper rendering.
-        7.  NOTES: Use [[note | content]] for helpful tips or conclusions. It renders as a blue alert box. Use wisely.
-        8.  WARNINGS: Use [[warning | content]] for critical cautions or errors. It renders as a red/orange alert box.
-        9.  SUCCESS: Use [[success | content]] for task completions or positive confirmations. It renders as a green alert box.
-        10. TABLES: Use the format [[table | Header1 | Header2 || Row1Col1 | Row1Col2 ]]. Use || to separate the header row from data rows and | to separate columns.
-        11. CODE BLOCKS: Use [[code | language | code_content]]. Do not use triple backticks.
-        12. INLINE CODE: Use single backticks for short code snippets. Example: const x = 10.
-
-        ### RESPONSE STYLE:
-        - Be intelligent on providing short response or detailed based on user query.
-        - Use [[note]] blocks for context and [[b | text]] for key terms.
-        - If providing code, always use the [[code | lang | ...]] format.
-        - table text must be in simple raw text. Never put formating in table th or td content.
-        - Never put 2 or more \n to get into new line.
-        - Use no emoji until it become necessory to provide as per quary.
-
-        ### EXAMPLE OUTPUT:
-        [[note | Here is the data you requested regarding AI Agents.]]
-        • Agent A: High autonomy.
-        • Agent B: Task-specific.
-
-        [[table | Agent Type | Status || Proactive | Active || Reactive | Idle ]]
-
-        [[warning | Ensure the API key is secured before deployment.]]
         
-        ### TOOL DICTIONARY & SCHEMA:
+        ### 1. HEADERS
+        Use headers to structure your response cleanly. 
+        Syntax: [[h1 | Text]] up to [[h6 | Text]]
+        Example: [[h2 | Main Features]]
+
+        ### 2. CALLOUT BOXES (Crucial for UI)
+        Use callouts to highlight important information, tips, warnings, or successes. This makes the output visually engaging.
+        Syntax:
+        - [[info | Here is an interesting tip or fact.]]
+        - [[note | Please keep this detail in mind.]]
+        - [[warning | Be careful when executing this step!]]
+        - [[success | The operation completed successfully.]]
+
+        ### 3. TABLES
+        Use tables to compare data or list attributes. 
+        Syntax: [[table | Header 1 | Header 2 || Row 1 Col 1 | Row 1 Col 2 || Row 2 Col 1 | Row 2 Col 2 ]]
+        - Use a single pipe (|) to separate columns.
+        - Use a double pipe (||) to separate rows. The first row is ALWAYS treated as the header.
+
+        ### 4. CODE BLOCKS
+        Always wrap code snippets, JSON, or terminal commands in code blocks.
+        Syntax: [[code | language | code_content_here ]]
+        Example: [[code | javascript | console.log("Hello World"); ]]
+
+        ### 5. HYPERLINKS
+        Format all URLs using this specific link syntax.
+        Syntax: [[link | URL | Clickable Text]]
+        Example: [[link | https://google.com | Go to Google]]
+
+        ### 6. INLINE STYLING
+        Standard markdown like **bold**, *italic*, and \`inline code\` IS supported as a fallback, but you may also use strict tags:
+        - Bold: [[b | bold text]]
+        - Italic: [[i | italic text]]
+        - Strikethrough: [[s | crossed out text]]
+
+        ### 7. LISTS
+        For bulleted lists, you MUST use the actual bullet character (•) followed by a space.
+        Example:
+        • First item
+        • Second item
+        • Third item
+
+        ### GUIDELINES FOR ATTRACTIVE RESULTS:
+        1. Break down long walls of text using [[h2 | ...]] and [[h3 | ...]].
+        2. Frequently use [[info | ...]] or [[note | ...]] blocks to summarize key takeaways.
+        3. If providing technical steps, format the warnings in [[warning | ...]] tags.
+        4. Separate paragraphs naturally with double line breaks.
+
+        Do not use standard HTML tags like <b> or <table>. Only use the [[tag | content]] syntax provided above.        
+        
+            ### TOOL DICTIONARY & SCHEMA:
         - speak: (String) "Acknowledging your request for [X], I am now [Action]."
         - server_memory: {"longterm/shortterm", "Fact to remember"}
         - weather: {"location": "City Name"}
@@ -844,30 +898,68 @@
         - Speaker: {"status": "on/off"}
         - scheduletask: {"seconds": Number, "prompt": "Command to run later"}
 
+        
+        What to Save
 
+        Save information when the user mentions:
 
-        ###Guidelines for using memory:
-        1. Use "longterm" for:
-        - User's personal information (name, age, location, job)
-        - User's preferences and interests
-        - Important facts that should be remembered across all future conversations
-        - User's goals, projects, or recurring needs
-        2. Use "shortterm" for:
-        - Temporary context in the current conversation
-        - Information only relevant for this session
-        - Temporary preferences or states
-        - Information that may change frequently
+        • Personal information (name, job, location, age)
+        • Preferences (likes, dislikes, habits)
+        • Skills, expertise, or interests
+        • Goals, projects, or ongoing work
+        • Personal experiences or stories
+        • How the user prefers things to be done
+        • Recurring needs or patterns
+
+        Memory Types
+        -longterm
+        Use for information useful in future conversations.
         Examples:
-        - "- server_memory: {"longterm", "User's name is Sarah and she works as a graphic designer"}"
-        - "- server_memory: {"shortterm", "User is currently working on a logo design project"}"
-        - "- server_memory: {"longterm", "User prefers concise, bullet-point responses"}"
-        - "- server_memory: {"shortterm", "We are discussing web design trends for 2024"}"
-        When to save memory:
-        - When user shares personal information
-        - When user expresses a clear preference
-        - When establishing context for ongoing tasks
-        - When information would be useful for future interactions
-        Note: Always output memory saves on their own line, exactly in this format, when you determine information should be remembered.
+        User identity or personal details
+        Interests and hobbies
+        Skills and expertise
+        Long-term goals
+        Preferences
+
+        -shortterm
+        Use for temporary context in the current conversation.
+        Examples:
+        Current task
+        Topic being discussed
+        Temporary state or activity
+
+        Rules
+        • Save memory only when information is meaningful or reusable.
+        • Keep memory sentences short and factual.
+        • Never repeat the same memory if already known.
+        • The response should remain natural while learning from the user.
+
+
+        ### Examples of correct execution:
+        {
+        "speak": "Ah, So you like Cricket, I got you",
+        "server_memory": {
+            "longterm": "Krishna loves to play cricekt"
+        }
+        }
+
+        {
+        "speak": "Nice, I’ll remember that you enjoy solving complex Excel problems.",
+        "server_memory": {
+        "longterm": "Krishna enjoys working with advanced Excel formulas and data automation"
+        }
+        }
+
+        {
+        "speak": "Got it. I'll keep in mind that you're currently building an AI chatbot system.",
+        "server_memory": {
+        "shortterm": "Krishna is currently developing a personalized AI chatbot with memory and automation features"
+        }
+        }
+
+        
+
+
 
         ### Tools Assist:
         1. Can turn on your speaking or off it using "Speaker" query. By default its On.
@@ -897,7 +989,7 @@
     // ==========================================
 async function executeTools(data, statusContainer) {
     const YOUTUBE_API_KEY = 'AIzaSyAwOC2k1nLmCuD0F7VOduc1UhbwIXWaLzw';
-
+    console.log(data, statusContainer)
     const handlers = {
         // --- NEW YOUTUBE HANDLERS ---
         
@@ -934,22 +1026,65 @@ async function executeTools(data, statusContainer) {
             }
         },
 
-        server_memory: async ({ category, fact }) => {
-            // 1. Determine which storage key to use
-            const storageKey = category === 'longterm' ? 'niharika_longterm' : 'niharika_shortterm';
-            // 2. Retrieve existing memories
-            let memories = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            // 3. Add the new memory with a timestamp
-            const newEntry = { 
-                fact, 
-                date: new Date().toLocaleString() 
-            };
-            memories.push(newEntry);
-            // 4. Save back to localStorage
-            localStorage.setItem(storageKey, JSON.stringify(memories));
-            // Capitalizing category name for the return message
-            const displayCategory = category.charAt(0).toUpperCase() + category.slice(1);
-            return `Successfully stored in ${displayCategory} memory: "${fact}"`;
+        server_memory: async (args) => {
+            console.log("Memory Request Received:", args);
+
+            
+                // 1. Extract category and fact
+                const category = Object.keys(args)[0]; 
+                const fact = args[category];
+
+                if (!fact || typeof fact !== "string") {
+                    return "Memory not saved: invalid fact.";
+                }
+
+                // 2. Normalize category
+                const normalizedCategory = (category || "shortterm").toLowerCase();
+                const storageKey = normalizedCategory === "longterm" 
+                    ? "niharika_longterm" 
+                    : "niharika_shortterm";
+
+                // 3. Retrieve and CLEAN existing memories
+                let memories = [];
+                try {
+                    const rawData = localStorage.getItem(storageKey);
+                    memories = JSON.parse(rawData || "[]");
+                    
+                    // SAFETY: Remove any entries that are not objects or are missing the 'fact' key
+                    if (Array.isArray(memories)) {
+                        memories = memories.filter(m => m && typeof m === 'object' && m.fact);
+                    } else {
+                        memories = [];
+                    }
+                } catch (e) {
+                    memories = [];
+                }
+
+                // 4. Prevent duplicates with a Safety Check (Fixes your Error)
+                const exists = memories.some(m => {
+                    // Check if m and m.fact exist before calling toLowerCase()
+                    return m && m.fact && m.fact.toLowerCase() === fact.toLowerCase().trim();
+                });
+
+                if (exists) {
+                    return `I already know that: "${fact}"`;
+                }
+
+                // 5. Add new memory
+                const newEntry = {
+                    fact: fact.trim(),
+                    date: new Date().toLocaleString()
+                };
+
+                memories.push(newEntry);
+
+                // 6. Save
+                localStorage.setItem(storageKey, JSON.stringify(memories));
+
+                console.log(`Saved to ${storageKey}:`, newEntry);
+                return `Memory Updated.`;
+
+            
         },
 
         weather: async (val) => {
