@@ -180,57 +180,76 @@
 
 /* Mobile Responsiveness (Screens < 768px) */
 @media (max-width: 768px) {
+    /* 1. Force the layout to fit exactly into the mobile viewport */
+    .app-shell {
+        height: 100dvh !important; /* Use dvh for mobile browser address bar compatibility */
+        overflow: hidden;
+        display: flex;
+    }
+
+    .content-area {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+        position: relative;
+    }
+
+    /* 2. Chat Viewport must take all remaining space to push footer down */
+    .chat-viewport {
+        flex: 1; 
+        overflow-y: auto;
+        padding-bottom: 20px;
+    }
+
+    /* 3. Ensure Input stays at the bottom */
+    .input-container {
+        padding: 10px;
+        background: var(--bg-main);
+        border-top: 1px solid var(--border);
+    }
+
+    /* 4. Sidebar Overrides */
     .sidebar {
         position: fixed;
         top: 0;
-        left: -280px; /* Hide sidebar off-screen */
+        left: -280px; 
         bottom: 0;
+        height: 100vh;
+        z-index: 2000; /* Ensure it's above everything */
         box-shadow: 10px 0 20px rgba(0,0,0,0.2);
     }
-    .app-shell{
-        max-height: 100vh !important;
-        
-    }
-    #compu-user{
-        display: none;
-    }
-    .responsive-logo{
-        
-    }
-    .breadcrumb-area {
-        display: none;
-    }
 
-    /* Active class to slide the sidebar in */
     .sidebar.active {
         left: 0;
     }
 
-    /* Ensure the brand name and canvas don't shrink awkwardly */
-    .brand {
-        justify-content: space-between;
-        margin-bottom: 1.5rem;
+    /* 5. Mobile UI Fixes */
+    #compu-user {
+        display: none;
     }
+
+    #responsive-logo {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+
     .top-bar {
+        height: 60px; /* Fixed height for header */
         display: flex;
         align-items: center;
-        justify-content: space-between; 
-        /* width: 100%; */
-        /* padding: 0.5rem 1rem; */
-        position: relative; /* Base for relative elements */
+        justify-content: space-between;
+        padding: 0 1rem;
     }
 
     #mobileMenuBtn {
-        position: relative; /* Change from 'fixed' so it obeys flexbox */
-        top: auto;          /* Reset previous fixed positions */
-        left: auto;         /* Reset previous fixed positions */
         color: var(--code-bg);
-        display: flex;      /* Ensures icon centers inside button */
-        align-items: center;
-        justify-content: center;
+        display: flex;
         z-index: 1100;
         background: none;
         border: none;
+        padding: 0;
     }
 }
         :root {
