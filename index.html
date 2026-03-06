@@ -2189,19 +2189,26 @@ recognition.onresult = (event) => {
 
 
 function speakText(text) {
+    // 1. Force Reset & Pre-flight checks
     window.speechSynthesis.cancel();
-    
-    if (!isSpeechEnabled) return;
+    if (!isSpeechEnabled || !text) return;
+
+    // 2. Logic to "Wake Up" Audio on Mobile
+    // Some mobile browsers need a 'blank' utterance to unlock the speaker
+    const silentIncentive = new SpeechSynthesisUtterance("");
+    window.speechSynthesis.speak(silentIncentive);
 
     isAISpeaking = true;
-    if (recognition) recognition.stop();
+    if (recognition) {
+        try { recognition.stop(); } catch(e) {}
+    }
 
-    // Trigger the "Speaking" animation (Rhythmic waves)
     if (typeof setLogoState === "function") setLogoState('speaking');
 
+    // 3. Clean text for SSML-like clarity
     let cleanText = text
         .replace(/\[\[(?:b|note|warning|table|code)\s*\|\s*(.*?)\s*\]\]/gs, '$1')
-        .replace(/[*_#~]/g, '')
+        .replace(/[*_#~`]/g, '') // Added backticks for code blocks
         .replace(/(\w):(\s|$)/g, '$1$2')
         .replace(/[|\[\]\\^]/g, ' ')
         .replace(/•/g, '')
@@ -2209,28 +2216,58 @@ function speakText(text) {
         .trim();
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
+
+    // 4. Robust Voice Selection (Handles async loading on Mobile)
     const voices = window.speechSynthesis.getVoices();
-    const preferredVoice = voices.find(v => v.name.includes('India') && v.name.includes('Female')) || 
-                          voices.find(v => v.name.includes('Google UK English Female')) ||
-                          voices.find(v => v.lang.includes('en') && v.name.includes('Female'));
+    
+    // Niharika's Voice Priority Matrix
+    const preferredVoice = 
+        voices.find(v => v.name.includes('India') && v.name.includes('Female')) || 
+        voices.find(v => v.name.includes('Google UK English Female')) ||
+        voices.find(v => v.name.includes('Samantha')) || // High quality iOS voice
+        voices.find(v => v.lang.includes('en') && v.name.includes('Female')) ||
+        voices[0]; // Fallback
     
     if (preferredVoice) utterance.voice = preferredVoice;
-    utterance.pitch = 1.1; 
+    
+    utterance.pitch = 1.05; // Slightly more natural for Niharika
     utterance.rate = 1.0;
+    utterance.volume = 1.0; // Ensure it's not muted
+
+    // 5. The "Chrome Heartbeat" Fix 
+    // Chrome sometimes stops speaking after 15 seconds. This loop keeps it alive.
+    const keepAlive = setInterval(() => {
+        if (!window.speechSynthesis.speaking) {
+            clearInterval(keepAlive);
+        } else {
+            window.speechSynthesis.pause();
+            window.speechSynthesis.resume();
+        }
+    }, 10000);
 
     utterance.onend = () => {
+        clearInterval(keepAlive);
         isAISpeaking = false;
-        
-        // Reset the Logo to 'ideal' (Dynamic Morphing Sphere)
         if (typeof setLogoState === "function") setLogoState('ideal');
-
-        if (isMicEnabled) {
-            startNiharikaListening();
-        }
+        if (isMicEnabled) startNiharikaListening();
     };
 
+    utterance.onerror = (event) => {
+        clearInterval(keepAlive);
+        console.error("Speech Error:", event);
+        if (typeof setLogoState === "function") setLogoState('ideal');
+    };
+
+    // 6. Final Execution
     window.speechSynthesis.speak(utterance);
 }
+
+// 7. Critical: Mobile browsers load voices asynchronously
+// This ensures voices are ready before you call speakText
+window.speechSynthesis.onvoiceschanged = () => {
+    window.speechSynthesis.getVoices();
+};
+
 // --- 3. UI CONTROL FUNCTIONS ---
 // --- UPDATED UI CONTROL ---
 
