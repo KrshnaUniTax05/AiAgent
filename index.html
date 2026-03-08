@@ -463,9 +463,15 @@
             margin: 1rem 0px !important;
         }
 
-        .ai-header h1, h2, h3, h4, h5, h6{
+        .ai-response h1, 
+        .ai-response h2, 
+        .ai-response h3, 
+        .ai-response h4, 
+        .ai-response h5, 
+        .ai-response h6 {
             margin: 1rem 0;
-            color: var(--ai-text) !important;
+            color: #334155 !important; /* Professional dark gray for Day mode */
+            transition: color 0.3s ease;
         }
 
         .task-icon-anim {
@@ -609,9 +615,9 @@
     overflow-x: auto;
 }
 
-.ai-response p{
+/* .ai-response p{
     margin-bottom: 7rem;
-}
+} */
 
 .ai-code-block code {
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
@@ -820,10 +826,14 @@
     color: #f2f2f2 !important;
     border-color: #30363d !important;
 }
-[data-theme="dark"] .ai-response p, h1, h2, h3, h4, h5, h6 {
-    /* background-color: #1c2128 !important; */
-    color: #f2f2f2 !important;
-    border-color: #30363d !important;
+[data-theme="dark"] .ai-response p, 
+[data-theme="dark"] .ai-response h1, 
+[data-theme="dark"] .ai-response h2, 
+[data-theme="dark"] .ai-response h3, 
+[data-theme="dark"] .ai-response h4, 
+[data-theme="dark"] .ai-response h5, 
+[data-theme="dark"] .ai-response h6 {
+    color: #f2f2f2 !important; /* Your requested Dark Mode text color */
 }
 
 [data-theme="dark"] .history-item {
